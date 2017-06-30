@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+echo `ip route list scope global | grep -o 'default via .* dev' | cut -d ' ' -f 3`
