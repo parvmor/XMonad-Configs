@@ -1,0 +1,35 @@
+Config { font = "xft:Fixed-8:pixelsize=13"
+       , additionalFonts = []
+       , borderColor = "black"
+       , border = TopB
+       , bgColor = "#010123"
+       , fgColor = "grey"
+       , alpha = 255
+       , position = Top
+       , textOffset = -1
+       , iconOffset = -1
+       , lowerOnStart = True
+       , pickBroadest = False
+       , persistent = False
+       , hideOnStart = False
+       , iconRoot = "."
+       , allDesktops = True
+       , overrideRedirect = False
+       , commands = [ Run Weather "VILK" ["-t","<station>: <tempC>C <skyCondition>","-L","18","-H","25","--normal","green","--high","red","--low","lightblue"] 36000
+                    , Run Network "eno1" ["-t",": <rx>Kb|<tx>Kb","-L","0","-H","32","--normal","green","--high","red"] 10
+                    , Run Network "wlo1" ["-t",": <rx>Kb|<tx>Kb","-L","0","-H","32","--normal","green","--high","red"] 10
+                    , Run Cpu ["-L","3","-H","50","--normal","green","--high","red"] 10
+                    , Run Memory ["-t","Mem: <usedratio>%"] 10
+                    , Run Swap [] 10
+                    , Run Com "uname" ["-s","-r"] "" 36000
+                    , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
+                    , Run StdinReader
+                    , Run Com "sh" ["/home/parv/.xmonad/bin/volume"] "volume" 10
+                    , Run Com "sh" ["/home/parv/.xmonad/bin/backlight"] "brightness" 10
+                    , Run BatteryP ["BAT0"] ["-t","<acstatus>: <left>","-L","15","-H","60","-l","darkred","-n","darkorange","-h","#bbb","--","-o","Battery","-O","ACPower","-i","<fc=#bbb>Charged</fc>"] 50
+                    , Run Com "sh" ["/home/parv/.xmonad/bin/netinfo"] "ipinfo" 10
+                    ]
+       , sepChar = "%"
+       , alignSep = "}{"
+       , template = "<fc=#ff0000>λ</fc> | <fc=#fff>spirit away, spirit away. the ninth of may.</fc> | %battery% | %cpu% | %memory% | %swap% | Eth%eno1% - WiFi%wlo1% | <fc=#0761fc>%ipinfo%</fc>}{|| %StdinReader% || %volume% | %brightness% | <fc=#ee9a00>%date%</fc> | %VILK% | %uname%"
+       }

@@ -5,6 +5,7 @@ import           System.IO
 import           XMonad
 import           XMonad.Actions.SwapWorkspaces (swapWithCurrent)
 import           XMonad.Hooks.DynamicLog
+import qualified XMonad.Hooks.EwmhDesktops as E
 import           XMonad.Hooks.ManageDocks
 import           XMonad.Hooks.ManageHelpers
 import           XMonad.Hooks.SetWMName
@@ -19,7 +20,7 @@ import           XMonad.Util.Run(spawnPipe)
 import qualified XMonad.StackSet as W
 
 myTerminal    = "/usr/bin/gnome-terminal"
-myWorkspaces  = ["1:web", "2:code", "3:vm", "four", "five"] ++ map show [6..9]
+myWorkspaces  = ["1:web", "2:code", "3:SoH(Haskell)", "4:Tipsy(Scala)", "5:Competitive"] ++ map show [6..9]
 myScreensaver = "/usr/bin/xscreensaver-command --lock"
 myLauncher    = "$(yeganesh -x -- -fn '-*-terminus-*-r-normal-*-*-120-*-*-*-*-iso8859-*' -nb '#000000' -nf '#FFFFFF' -sb '#7C7C7C' -sf '#CEFFAC')"
 
@@ -105,23 +106,28 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask, button3), (\w -> focus w >> mouseResizeWindow w))
     ]
 
-myStartupHook = return ()
+myStartupHook = do
+    E.ewmhDesktopsStartup
+    return ()
+
+--myEventHook = E.ewmhDesktopsEventHook <+> E.fullscreenEventHook <+> fullscreenEventHook
+--myEventHook = E.ewmhDesktopsEventHook
 
 main = do
     xmproc <- spawnPipe "/usr/local/bin/xmobar ~/.xmobarrc"
     xmonad $ defaults
         { manageHook      = manageDocks <+> manageHook defaultConfig
-        , handleEventHook = handleEventHook defaultConfig <+> docksEventHook
+        , handleEventHook = handleEventHook defaultConfig <+> E.ewmhDesktopsEventHook <+> E.fullscreenEventHook <+> docksEventHook
         , logHook         = dynamicLogWithPP $ xmobarPP
             { ppOutput  = hPutStrLn xmproc
-            , ppTitle   = xmobarColor xmobarTitleColor "" . shorten 30
+            , ppTitle   = xmobarColor xmobarTitleColor "" . shorten 20
             , ppCurrent = xmobarColor xmobarCurrentWorkspaceColor ""
             , ppSep     = "  "
             }
         }
 
 
-defaults = defaultConfig
+defaults = E.ewmh $ defaultConfig
     { terminal           = myTerminal
     , focusFollowsMouse  = myFocusFollowsMouse
     , borderWidth        = myBorderWidth
@@ -133,5 +139,6 @@ defaults = defaultConfig
     , mouseBindings      = myMouseBindings
     , layoutHook         = smartBorders $ myLayout
     , manageHook         = myManageHook
+--    , handleEventHook    = myEventHook
     , startupHook        = myStartupHook
     }
