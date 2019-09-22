@@ -1,0 +1,17 @@
+#!/bin/bash
+
+setxkbmap -option "ctrl:nocaps"
+
+trayer --edge top --align right --SetDockType true --SetPartialStrut true\
+       --expand true --width 15 --transparent true --alpha 0 --tint 0x283339 --height 22\
+       --monitor 1 &
+
+nm-applet &
+blueman-applet &
+pa-applet &
+
+feh --bg-scale /home/parv/Pictures/doctor-who.jpg
+
+xinput set-prop 'SynPS/2 Synaptics TouchPad' 'libinput Tapping Enabled' 1
+
+xmonad-session
